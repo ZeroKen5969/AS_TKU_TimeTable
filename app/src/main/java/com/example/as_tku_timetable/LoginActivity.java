@@ -70,10 +70,13 @@ public class LoginActivity extends AppCompatActivity {
                 //System.out.println(response);
 
                 /*******進入課表畫面*******/
-                www.SendGet(TIME_TABLE + usr_editor.getText()); //要get兩次
-                response = www.SendGet(TIME_TABLE + usr_editor.getText());
-                TextView tv = findViewById(R.id.textView4);
-                tv.setText(response);
+                data = new Hashtable<String, String>();
+                data.put("YrSem","1072");
+                data.put("stu_no",usr_editor.getText().toString());
+                //www.SendGet(TIME_TABLE + usr_editor.getText()); //要get兩次
+                response = www.SendPost(TIME_TABLE + usr_editor.getText(),data);
+                //TextView tv = findViewById(R.id.textView4);
+                //tv.setText(response);
                 System.out.println(response);
             }
         }).start();
