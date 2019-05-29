@@ -1,21 +1,12 @@
 package com.example.as_tku_timetable;
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 public class WWW {
 
@@ -53,6 +44,13 @@ public class WWW {
                 }
             }
 
+            ///自動重定向
+            if(con.getResponseCode() == 302) {
+                String redirUrl = con.getHeaderField("location");
+                return SendGet(redirUrl);
+                //System.out.println(ul);
+            }
+
             buf = new StringBuffer();
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String line = null;
@@ -60,13 +58,6 @@ public class WWW {
                 buf.append(line);
             }
             in.close();
-
-            ///自動重定向
-            if(con.getResponseCode() == 302) {
-                String redirUrl = con.getHeaderField("location");
-                return SendGet(redirUrl);
-                //System.out.println(ul);
-            }
         } catch(Exception ex) {
             ex.printStackTrace();
         }
