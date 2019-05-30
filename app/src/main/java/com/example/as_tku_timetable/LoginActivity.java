@@ -112,7 +112,12 @@ public class LoginActivity extends AppCompatActivity {
         for(Element row : rows){
             Elements eles =row.getElementsByTag("td");
             for(Element ele : eles){
-                    result += ele.text();
+                    if(ele.text() != ""){
+                        result += ele.text();
+                    }
+                    else{
+                        result += "space";
+                    }
             }
             result += "\n";
         }
