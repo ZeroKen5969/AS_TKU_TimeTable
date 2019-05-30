@@ -7,7 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.Hashtable;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -85,8 +91,9 @@ public class LoginActivity extends AppCompatActivity {
                     /*******進入課表畫面*******/
                     www.SendGet(TIME_TABLE + usr); //要get兩次
                     response = www.SendGet(TIME_TABLE + usr);
-                    tv.setText(response);
+                    //tv.setText(response);
                     System.out.println(response);
+                    getTable(response);
                 }
                 //System.out.println(response);
 
@@ -94,5 +101,24 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
         TextView tv = findViewById(R.id.textView4);
         tv.setMovementMethod(new ScrollingMovementMethod());
+    }
+
+    private String getTable(String respond){
+        String result = "";
+        Document doc = Jsoup.parse(respond);
+        Element table = doc.getElementById("Table1");
+        Elements rows = table.getElementsByTag("tr");
+
+        for(Element row : rows){
+            Elements eles =row.getElementsByTag("td");
+            for(Element ele : eles){
+                    result += ele.text();
+            }
+            result += "\n";
+        }
+
+        System.out.println(result);
+
+        return result;
     }
 }
