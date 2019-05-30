@@ -2,6 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.as_tku_timetable.MainActivity">
+
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/Delete_Icon"
+        android:title="Delete"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@drawable/Cancel_Icon"
+        android:title="Cancel"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

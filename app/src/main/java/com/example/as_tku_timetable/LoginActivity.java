@@ -1,17 +1,11 @@
 package com.example.as_tku_timetable;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.Hashtable;
 
@@ -51,30 +45,51 @@ public class LoginActivity extends AppCompatActivity {
 
                 /*******取得驗證碼*******/
                 www.SendGet(LOGIN_VIDCODE);
-                data = new Hashtable<String, String>();
+                data = new Hashtable<>();
                 data.put("outType", "2");
                 response = www.SendPost(LOGIN_VIDCODE, data);
                 //System.out.println(response);
 
                 /*******登入*******/
-                data = new Hashtable<String, String>();
+                final String usr = usr_editor.getText().toString();
+                final String psw = psw_editor.getText().toString();
+                data = new Hashtable<>();
                 data.put("myurl", "https://sso.tku.edu.tw/aissinfo/emis/tmw0012.aspx");
                 data.put("ln", "zh_TW");
                 data.put("embed", "No");
                 data.put("logintype", "logineb");
-                data.put("username", usr_editor.getText().toString());
-                data.put("password", psw_editor.getText().toString());
+                data.put("username", usr);
+                data.put("password", psw);
                 data.put("vidcode", response);
                 data.put("loginbtn", "登入");
                 response = www.SendPost(LOGIN_ACTION, data);
+
+                TextView tv = findViewById(R.id.textView4);
+                if(response.contains("錯誤")) {
+                    tv.setText("帳號或密碼輸入錯誤，請重新輸入");
+                    System.out.println("帳號或密碼輸入錯誤，請重新輸入");
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            /*******新增帳號欄位*******/
+                            ListData listData = new ListData();
+                            listData.isCheck = false;
+                            listData.content = usr;
+                            listData.usr = usr;
+                            listData.psw = psw;
+                            MainActivity.AddData(listData);
+                        }
+                    });
+
+                    /*******進入課表畫面*******/
+                    www.SendGet(TIME_TABLE + usr); //要get兩次
+                    response = www.SendGet(TIME_TABLE + usr);
+                    tv.setText(response);
+                    System.out.println(response);
+                }
                 //System.out.println(response);
 
-                /*******進入課表畫面*******/
-                www.SendGet(TIME_TABLE + usr_editor.getText()); //要get兩次
-                response = www.SendGet(TIME_TABLE + usr_editor.getText());
-                //TextView tv = findViewById(R.id.textView4);
-                //tv.setText(response);
-                System.out.println(response);
             }
         }).start();
         TextView tv = findViewById(R.id.textView4);

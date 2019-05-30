@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="Delete_Icon">@android:drawable/ic_menu_delete</drawable>
+    <drawable name="Cancel_Icon">@android:drawable/ic_menu_close_clear_cancel</drawable>
+</resources>
