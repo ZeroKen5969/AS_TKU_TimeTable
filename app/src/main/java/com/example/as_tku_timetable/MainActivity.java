@@ -22,15 +22,15 @@ import java.util.List;
 /*******用於保存主頁訊息*******/
 class ListData {
     public String usr;
-    public String psw;
-    public String content;
+    public String title;
     public boolean isCheck;
+    public ArrayList<String> timeTable;
 }
 
 /*******要存檔的東西*******/
 class SaveBundle implements Serializable {
+    public ArrayList<String> timeTable;
     public String usr;
-    public String psw;
 }
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Delete
     }
 
-    public static MenuState menuState = MenuState.Normal;
+    public static MenuState menuState;
     private static List<ListData> listDatas;
     private static RecyclerView view;
 
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        menuState = MenuState.Normal;
         listDatas = LoadUserInfo();
         if(listDatas == null) {
             listDatas = new ArrayList<>();
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*******建構主頁內容*******/
         view = findViewById(R.id.list_view);
-        view.setAdapter(new MyAdapter(listDatas));
+        view.setAdapter(new MainActivityAdapter(listDatas));
         view.setLayoutManager(new LinearLayoutManager(this));
         view.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
@@ -125,6 +126,14 @@ public class MainActivity extends AppCompatActivity {
         view.getAdapter().notifyItemInserted(listDatas.size() - 1);
     }
 
+    public static ListData GetData(String usr) {
+        for(ListData listData : listDatas) {
+            if(listData.usr.equals(usr)) return listData;
+        }
+        return null;
+    }
+
+    /***************file manager***************/
     private static final String SAVE_FILE = "UserInfo";
     public void SaveUserInfo() {
         try {
@@ -132,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             for (ListData data : listDatas) {
                 SaveBundle saveBundle = new SaveBundle();
                 saveBundle.usr = AESCrypt.Encrypt(data.usr);
-                saveBundle.psw = AESCrypt.Encrypt(data.psw);
+                saveBundle.timeTable = data.timeTable;
                 saveBundles.add(saveBundle);
             }
 
@@ -154,15 +163,14 @@ public class MainActivity extends AppCompatActivity {
             for (SaveBundle saveBundle : saveBundles) {
                 ListData listData = new ListData();
                 listData.usr = AESCrypt.Decrypt(saveBundle.usr);
-                listData.psw = AESCrypt.Decrypt(saveBundle.psw);
+                listData.title = listData.usr;
+                listData.timeTable = saveBundle.timeTable;
                 listData.isCheck = false;
-                listData.content = AESCrypt.Decrypt(saveBundle.usr);
                 list.add(listData);
             }
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
-
         }
 
         return null;

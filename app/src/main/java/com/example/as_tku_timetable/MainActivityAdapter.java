@@ -1,5 +1,6 @@
 package com.example.as_tku_timetable;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,11 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapter.ViewHolder> {
 
     private List<ListData> data;
 
@@ -27,7 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public MyAdapter(List<ListData> data) {
+    public MainActivityAdapter(List<ListData> data) {
         this.data = data;
     }
 
@@ -42,7 +42,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         final ListData viewData = data.get(position);
-        viewHolder.tv.setText(viewData.content);
+        viewHolder.tv.setText(viewData.title);
         viewHolder.cb.setVisibility(MainActivity.menuState == MainActivity.MenuState.Delete ? View.VISIBLE : View.INVISIBLE);
 
         /*******要設定為按下按鈕時改變狀態, 否則會造成checkbox錯亂*******/
@@ -55,10 +55,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         /*******不可添加到onClick, 否則會發生錯亂*******/
         viewHolder.cb.setChecked(viewData.isCheck);
 
+        /*******開啟課表頁面*******/
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Item " + position + " is clicked.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), TimeTableActivity.class);
+                SaveBundle saveBundle = new SaveBundle();
+                saveBundle.timeTable = viewData.timeTable;
+                saveBundle.usr = viewData.title;
+                intent.putExtra("saveBundle", saveBundle);
+                v.getContext().startActivity(intent);
             }
         });
     }

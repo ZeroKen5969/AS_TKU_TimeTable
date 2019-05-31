@@ -1,5 +1,7 @@
 package com.example.as_tku_timetable;
+
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,7 +36,6 @@ public class WWW {
 
     //負責發送request及讀取response
     private String ReadWebPage(HttpURLConnection con) {
-        StringBuffer buf = null;
         try {
             /*******設置response cookie*******/
             Map<String, List<String>> hds = con.getHeaderFields();
@@ -51,17 +52,20 @@ public class WWW {
                 //System.out.println(ul);
             }
 
-            buf = new StringBuffer();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            StringBuffer buf = new StringBuffer();
+            InputStream is = con.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while((line = in.readLine()) != null) {
                 buf.append(line);
             }
+            is.close();
             in.close();
+            return buf.toString();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        return buf.toString();
+        return null;
     }
 
     //用於組裝所有cookie
@@ -93,7 +97,7 @@ public class WWW {
             }
 
             /*******設置預設header*******/
-            con.setRequestProperty("User-Agent","Mozilla/5.0");
+            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
             con.setInstanceFollowRedirects(false);
             con.setConnectTimeout(10000);
             con.setReadTimeout(10000);
