@@ -25,29 +25,36 @@ public class TimeTableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_table);
+
         tableLayout = findViewById(R.id.time_table);
-        saveBundle = (SaveBundle)getIntent().getExtras().get("saveBundle");
+        Bundle bundle = getIntent().getExtras();
+        saveBundle = (SaveBundle)bundle.get("saveBundle");
         createTable();
 
-        findViewById(R.id.save_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListData listData = MainActivity.GetData(saveBundle.usr);
-                if(listData == null) {
-                    listData = new ListData();
-                    listData.title = saveBundle.usr;
-                    listData.usr = saveBundle.usr;
-                    MainActivity.AddData(listData);
+        final View saveBtn = findViewById(R.id.save_btn);
+        if(bundle.containsKey("flag")) saveBtn.setVisibility(View.INVISIBLE);
+        else {
+            saveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ListData listData = MainActivity.getData(saveBundle.usr);
+                    if (listData == null) {
+                        listData = new ListData();
+                        listData.title = saveBundle.usr;
+                        listData.usr = saveBundle.usr;
+                        MainActivity.addData(listData);
+                    }
+                    listData.timeTable = saveBundle.timeTable;
+                    Toast.makeText(TimeTableActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                    saveBtn.setVisibility(View.INVISIBLE);
                 }
-                listData.timeTable = saveBundle.timeTable;
-                Toast.makeText(TimeTableActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
     }
 
     private String formatText(String content) {
         return content.replaceAll(" [^ ]+_.*", "") //刪除教室位置和老師名稱
-                      .replaceAll(" ", "\n"); //改成每次空格就換行
+                 .replaceAll(" ", "\n"); //改成每次空格就換行
     }
 
     private void createTable() {
@@ -64,5 +71,12 @@ public class TimeTableActivity extends AppCompatActivity {
                 tableRow.addView(textView);
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        MainActivity.saveUserInfo(this);
+        System.out.println("stop");
+        super.onStop();
     }
 }

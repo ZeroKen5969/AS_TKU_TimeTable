@@ -26,7 +26,7 @@ public class WWW {
     }
 
     //使用者可從這加入客製化header
-    public void AddHeader(String header, String data) {
+    public void addHeader(String header, String data) {
         if(header.equals("Cookie")) {
             cookies.add(data);
         } else {
@@ -35,7 +35,7 @@ public class WWW {
     }
 
     //負責發送request及讀取response
-    private String ReadWebPage(HttpURLConnection con) {
+    private String readWebPage(HttpURLConnection con) {
         try {
             /*******設置response cookie*******/
             Map<String, List<String>> hds = con.getHeaderFields();
@@ -48,7 +48,7 @@ public class WWW {
             ///自動重定向
             if(con.getResponseCode() == 302) {
                 String redirUrl = con.getHeaderField("location");
-                return SendGet(redirUrl);
+                return sendGet(redirUrl);
                 //System.out.println(ul);
             }
 
@@ -69,7 +69,7 @@ public class WWW {
     }
 
     //用於組裝所有cookie
-    private String CombineCookies() {
+    private String combineCookies() {
         StringBuffer buf = new StringBuffer();
         for (String cookie : cookies) {
             if (buf.length() != 0) buf.append(' ');
@@ -80,7 +80,7 @@ public class WWW {
     }
 
     //用於製作request
-    private HttpURLConnection MakeRequest(Method method, String url, Hashtable<String,String> postData) {
+    private HttpURLConnection makeRequest(Method method, String url, Hashtable<String,String> postData) {
         HttpURLConnection con = null;
         try {
             con = (HttpURLConnection)new URL(url).openConnection();
@@ -88,7 +88,7 @@ public class WWW {
 
             /*******組裝cookies*******/
             if(cookies.size() > 0) {
-                con.setRequestProperty("Cookie", CombineCookies());
+                con.setRequestProperty("Cookie", combineCookies());
             }
 
             /*******設置使用者header*******/
@@ -126,14 +126,14 @@ public class WWW {
     }
 
     //用來發送GET請求
-    public String SendGet(String path) {
-        HttpURLConnection con = MakeRequest(Method.GET, path, null);
-        return con != null ? ReadWebPage(con) : null;
+    public String sendGet(String path) {
+        HttpURLConnection con = makeRequest(Method.GET, path, null);
+        return con != null ? readWebPage(con) : null;
     }
 
     //用來發送POST請求
-    public String SendPost(String path, Hashtable<String, String> postData) {
-        HttpURLConnection con = MakeRequest(Method.POST, path, postData);
-        return con != null ? ReadWebPage(con) : null;
+    public String sendPost(String path, Hashtable<String, String> postData) {
+        HttpURLConnection con = makeRequest(Method.POST, path, postData);
+        return con != null ? readWebPage(con) : null;
     }
 }

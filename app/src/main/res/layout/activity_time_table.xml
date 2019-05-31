@@ -10,24 +10,25 @@
     <RelativeLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="?attr/colorPrimary"
         android:orientation="horizontal">
 
         <TextView
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:text="課表" />
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/save_btn"
-            android:layout_gravity="center"
-            android:layout_weight="6"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_weight="6"
+            android:background="@null"
+            android:layout_marginRight="25px"
             android:src="@android:drawable/ic_menu_save" />
     </RelativeLayout>
 

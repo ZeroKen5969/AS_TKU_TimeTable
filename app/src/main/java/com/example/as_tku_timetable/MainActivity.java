@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         menuState = MenuState.Normal;
-        listDatas = LoadUserInfo();
+        listDatas = loadUserInfo(this);
         if(listDatas == null) {
             listDatas = new ArrayList<>();
         }
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onOptionsItemSelected(action_cancel);
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
@@ -121,31 +122,30 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static void AddData(ListData listData) {
+    public static void addData(ListData listData) {
         listDatas.add(listData);
         view.getAdapter().notifyItemInserted(listDatas.size() - 1);
     }
 
-    public static ListData GetData(String usr) {
+    public static ListData getData(String usr) {
         for(ListData listData : listDatas) {
             if(listData.usr.equals(usr)) return listData;
         }
         return null;
     }
 
-    /***************file manager***************/
     private static final String SAVE_FILE = "UserInfo";
-    public void SaveUserInfo() {
+    public static void saveUserInfo(Context context) {
         try {
             List<SaveBundle> saveBundles = new ArrayList<>();
             for (ListData data : listDatas) {
                 SaveBundle saveBundle = new SaveBundle();
-                saveBundle.usr = AESCrypt.Encrypt(data.usr);
+                saveBundle.usr = AESCrypt.encrypt(data.usr);
                 saveBundle.timeTable = data.timeTable;
                 saveBundles.add(saveBundle);
             }
 
-            ObjectOutputStream ow = new ObjectOutputStream(openFileOutput(SAVE_FILE, Context.MODE_PRIVATE));
+            ObjectOutputStream ow = new ObjectOutputStream(context.openFileOutput(SAVE_FILE, Context.MODE_PRIVATE));
             ow.writeObject(saveBundles);
             ow.close();
         } catch (Exception ex) {
@@ -153,16 +153,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public List<ListData> LoadUserInfo() {
+    public static List<ListData> loadUserInfo(Context context) {
         try {
-            ObjectInputStream or = new ObjectInputStream(openFileInput(SAVE_FILE));
+            ObjectInputStream or = new ObjectInputStream(context.openFileInput(SAVE_FILE));
             List<SaveBundle> saveBundles = (List<SaveBundle>) or.readObject();
             or.close();
 
             List<ListData> list = new ArrayList<>();
             for (SaveBundle saveBundle : saveBundles) {
                 ListData listData = new ListData();
-                listData.usr = AESCrypt.Decrypt(saveBundle.usr);
+                listData.usr = AESCrypt.decrypt(saveBundle.usr);
                 listData.title = listData.usr;
                 listData.timeTable = saveBundle.timeTable;
                 listData.isCheck = false;
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        SaveUserInfo();
+        saveUserInfo(this);
         System.out.println("stop");
         super.onStop();
     }

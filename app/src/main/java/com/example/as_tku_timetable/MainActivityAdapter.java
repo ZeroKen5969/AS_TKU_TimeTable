@@ -35,7 +35,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                               .inflate(R.layout.content_main, parent, false);
+                    .inflate(R.layout.content_main, parent, false);
         return new ViewHolder(v);
     }
 
@@ -64,6 +64,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
                 saveBundle.timeTable = viewData.timeTable;
                 saveBundle.usr = viewData.title;
                 intent.putExtra("saveBundle", saveBundle);
+                intent.putExtra("flag", true);
                 v.getContext().startActivity(intent);
             }
         });
@@ -72,10 +73,5 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
     @Override
     public int getItemCount() {
         return data.size();
-    }
-
-    public void AddData(ListData dt) {
-        data.add(dt);
-        notifyDataSetChanged();
     }
 }
