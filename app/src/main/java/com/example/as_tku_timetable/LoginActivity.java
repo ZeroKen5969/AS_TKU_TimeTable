@@ -17,6 +17,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -137,12 +138,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     /*******傳遞課表資料*******/
                     handler.sendEmptyMessage(DIALOG_CREATE_TABLE);
-                    ArrayList<String> timeTable = getTimeTable(response);
+                    List<String> timeTable = getTimeTable(response);
                     Intent intent = new Intent(LoginActivity.this, TimeTableActivity.class);
-                    SaveBundle saveBundle = new SaveBundle();
-                    saveBundle.usr = usr;
-                    saveBundle.timeTable = timeTable;
-                    intent.putExtra("saveBundle", saveBundle);
+                    intent.putExtra("saveBundle", new SaveBundle(usr, timeTable));
                     startActivity(intent);
                     finish();
                 }
@@ -159,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
                 .create();
     }
 
-    private ArrayList<String> getTimeTable(String response){
-        ArrayList<String> timeTable = new ArrayList<>();
+    private List<String> getTimeTable(String response){
+        List<String> timeTable = new ArrayList<>();
         Document doc = Jsoup.parse(response);
         Elements datas = doc.select("#Table1 > tbody > tr > td");
 

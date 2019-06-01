@@ -39,9 +39,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     ListData listData = MainActivity.getData(saveBundle.usr);
                     if (listData == null) {
-                        listData = new ListData();
-                        listData.title = saveBundle.usr;
-                        listData.usr = saveBundle.usr;
+                        listData = new ListData(saveBundle);
                         MainActivity.addData(listData);
                     }
                     listData.timeTable = saveBundle.timeTable;
@@ -53,19 +51,20 @@ public class TimeTableActivity extends AppCompatActivity {
     }
 
     private String formatText(String content) {
-        return content.replaceAll(" [^ ]+_.*", "") //刪除教室位置和老師名稱
-                 .replaceAll(" ", "\n"); //改成每次空格就換行
+        return content.replaceAll(" [^ ]+(?=_[^_]*$)", "") //刪除老師名稱
+                .replaceAll(" (?=.*_.*)|_", "\n"); //改成每次空格或底線就換行
     }
 
     private void createTable() {
+        saveBundle.timeTable.set(0, "");
         for(int i = 0; i < COL ; ++i) {
             TableRow tableRow = new TableRow(this);
             tableLayout.addView(tableRow);
             for(int j = 0; j < ROW; ++j) {
-                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
                 TextView textView = new TextView(this);
-                textView.setWidth(0);
-                textView.setHeight(400);
+                textView.setWidth(100);
+                textView.setHeight(i == 0 ? 70 : 350);
+                textView.setPadding(5, 5, 5, 5);
                 textView.setGravity(Gravity.CENTER_HORIZONTAL);
                 textView.setText(formatText(saveBundle.timeTable.get(i * MAX_ROW + j)));
                 tableRow.addView(textView);

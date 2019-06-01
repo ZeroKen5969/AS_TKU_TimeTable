@@ -60,10 +60,7 @@ public class MainActivityAdapter extends RecyclerView.Adapter<MainActivityAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TimeTableActivity.class);
-                SaveBundle saveBundle = new SaveBundle();
-                saveBundle.timeTable = viewData.timeTable;
-                saveBundle.usr = viewData.title;
-                intent.putExtra("saveBundle", saveBundle);
+                intent.putExtra("saveBundle", new SaveBundle(viewData.title, viewData.timeTable));
                 intent.putExtra("flag", true);
                 v.getContext().startActivity(intent);
             }

@@ -24,13 +24,37 @@ class ListData {
     public String usr;
     public String title;
     public boolean isCheck;
-    public ArrayList<String> timeTable;
+    public List<String> timeTable;
+
+    public ListData(String usr, String title, boolean isCheck, List<String> timeTable) {
+        this.usr = usr;
+        this.title = title;
+        this.isCheck = isCheck;
+        this.timeTable = timeTable;
+    }
+
+    public ListData(SaveBundle saveBundle) {
+        usr = saveBundle.usr;
+        title = saveBundle.usr;
+        timeTable = saveBundle.timeTable;
+        isCheck = false;
+    }
 }
 
 /*******要存檔的東西*******/
 class SaveBundle implements Serializable {
-    public ArrayList<String> timeTable;
+    public List<String> timeTable;
     public String usr;
+
+    public SaveBundle(String usr, List<String> timeTable) {
+        this.usr = usr;
+        this.timeTable = timeTable;
+    }
+
+    public SaveBundle(ListData listData) {
+        timeTable = listData.timeTable;
+        usr = listData.usr;
+    }
 }
 
 public class MainActivity extends AppCompatActivity {
@@ -139,10 +163,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             List<SaveBundle> saveBundles = new ArrayList<>();
             for (ListData data : listDatas) {
-                SaveBundle saveBundle = new SaveBundle();
-                saveBundle.usr = AESCrypt.encrypt(data.usr);
-                saveBundle.timeTable = data.timeTable;
-                saveBundles.add(saveBundle);
+                saveBundles.add(new SaveBundle(data));
             }
 
             ObjectOutputStream ow = new ObjectOutputStream(context.openFileOutput(SAVE_FILE, Context.MODE_PRIVATE));
@@ -161,12 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
             List<ListData> list = new ArrayList<>();
             for (SaveBundle saveBundle : saveBundles) {
-                ListData listData = new ListData();
-                listData.usr = AESCrypt.decrypt(saveBundle.usr);
-                listData.title = listData.usr;
-                listData.timeTable = saveBundle.timeTable;
-                listData.isCheck = false;
-                list.add(listData);
+                list.add(new ListData(saveBundle));
             }
             return list;
         } catch (Exception ex) {

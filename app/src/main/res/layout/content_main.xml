@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:layout_margin="10dp"
+    android:background="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="100dp">
 
     <TextView
         android:id="@+id/text"
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="content"
-        android:padding="30px"
+        android:paddingLeft="30px"
         android:gravity="center_vertical"
         android:textSize="30dp"
         tools:layout_editor_absoluteX="111dp"
