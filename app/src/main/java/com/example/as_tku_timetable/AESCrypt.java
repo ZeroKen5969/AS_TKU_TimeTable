@@ -43,7 +43,6 @@ public abstract class AESCrypt {
             byte[] encryptBytes = cipher.doFinal(content.getBytes("UTF-8"));
             return Base64.encodeToString(encryptBytes, Base64.DEFAULT);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
         return null;

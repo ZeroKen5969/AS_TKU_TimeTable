@@ -75,7 +75,6 @@ public class TimeTableActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         MainActivity.saveUserInfo(this);
-        System.out.println("stop");
         super.onStop();
     }
 }

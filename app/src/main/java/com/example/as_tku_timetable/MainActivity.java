@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -161,14 +163,22 @@ public class MainActivity extends AppCompatActivity {
     private static final String SAVE_FILE = "UserInfo";
     public static void saveUserInfo(Context context) {
         try {
+            /*******同步資料*******/
             List<SaveBundle> saveBundles = new ArrayList<>();
             for (ListData data : listDatas) {
                 saveBundles.add(new SaveBundle(data));
             }
 
-            ObjectOutputStream ow = new ObjectOutputStream(context.openFileOutput(SAVE_FILE, Context.MODE_PRIVATE));
+            /*******存檔及加密*******/
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            ObjectOutputStream ow = new ObjectOutputStream(buf);
             ow.writeObject(saveBundles);
             ow.close();
+            byte[] bytes = buf.toByteArray();
+            String encryptStr = AESCrypt.encrypt(new String(bytes, "ISO_8859_1"));
+            ObjectOutputStream fw =  new ObjectOutputStream(context.openFileOutput(SAVE_FILE, MODE_PRIVATE));
+            fw.writeUTF(encryptStr);
+            fw.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -176,10 +186,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static List<ListData> loadUserInfo(Context context) {
         try {
-            ObjectInputStream or = new ObjectInputStream(context.openFileInput(SAVE_FILE));
+            /*******讀檔及解密*******/
+            ObjectInputStream fr = new ObjectInputStream(context.openFileInput(SAVE_FILE));
+            String encryptStr = fr.readUTF();
+            fr.close();
+            String decryptStr = AESCrypt.decrypt(encryptStr);
+            ByteArrayInputStream buf = new ByteArrayInputStream(decryptStr.getBytes("ISO_8859_1"));
+            ObjectInputStream or = new ObjectInputStream(buf);
             List<SaveBundle> saveBundles = (List<SaveBundle>) or.readObject();
             or.close();
 
+            /*******同步資料*******/
             List<ListData> list = new ArrayList<>();
             for (SaveBundle saveBundle : saveBundles) {
                 list.add(new ListData(saveBundle));
@@ -195,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         saveUserInfo(this);
-        System.out.println("stop");
         super.onStop();
     }
 }

@@ -49,7 +49,6 @@ public class WWW {
             if(con.getResponseCode() == 302) {
                 String redirUrl = con.getHeaderField("location");
                 return sendGet(redirUrl);
-                //System.out.println(ul);
             }
 
             StringBuffer buf = new StringBuffer();
@@ -116,9 +115,6 @@ public class WWW {
                 byte[] postDataBytes = buf.toString().getBytes("UTF-8");
                 con.getOutputStream().write(postDataBytes);
             }
-            //System.out.println(con.getRequestProperties());
-            //System.out.println(con.getResponseCode());
-            //System.out.println(con.getHeaderFields());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
