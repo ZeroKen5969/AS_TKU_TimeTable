@@ -18,12 +18,14 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String LOGIN_VIDCODE = "https://sso.tku.edu.tw/NEAI/ImageValidate";
     private static final String LOGIN_ACTION = "https://sso.tku.edu.tw/NEAI/login2.do?action=EAI";
-    private static final String TIME_TABLE = "https://sso.tku.edu.tw/aissinfo/emis/TMWC090_result.aspx?YrSem=";
+    private static final String TIME_TABLE = "https://sso.tku.edu.tw/aissinfo/emis/TMWC090_result.aspx";
     private static final int LOGIN_ERROR = 0x00;
     private static final int NET_ERROR = 0x01;
     private static final int DIALOG_GET_TABLE = 0x10;
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialogText.setText("登入中...");
+                terminal.setText("");
                 login(usr_editor.getText().toString(), psw_editor.getText().toString());
                 alertDialog.show();
             }
@@ -125,17 +128,29 @@ public class LoginActivity extends AppCompatActivity {
                     handler.sendEmptyMessage(DIALOG_CLOSE);
                     System.out.println("帳號或密碼輸入錯誤，請重新輸入");
                 } else {
-                    /*******取得課表資料*******/
+                    /*******取得目前學年*******/
                     handler.sendEmptyMessage(DIALOG_GET_TABLE);
-                    response = www.sendGet(TIME_TABLE + usr); //取得目前學年
+                    response = www.sendGet(TIME_TABLE);
                     if(response == null) {
                         handler.sendEmptyMessage(NET_ERROR);
                         handler.sendEmptyMessage(DIALOG_CLOSE);
                         System.out.println("登入失敗, 請重新嘗試!");
                         return;
                     }
-                    String year = response.replaceAll("(.|\\r|\\n)*?<option.*?value=\"(\\d+)\">(.|\\r|\\n)*", "$2");
-                    response = www.sendGet(TIME_TABLE + year);
+                    /*******解析學年*******/
+                    Matcher matcher = Pattern.compile("<option.*?value=\"(\\d+)\">").matcher(response);
+                    String year;
+                    if(matcher.find()) {
+                        year = matcher.group(1);
+                    } else {
+                        handler.sendEmptyMessage(NET_ERROR);
+                        handler.sendEmptyMessage(DIALOG_CLOSE);
+                        System.out.println("解析失敗!");
+                        return;
+                    }
+
+                    /*******取得課表資料*******/
+                    response = www.sendGet(TIME_TABLE + "?YrSem=" + year);
                     if(response == null) {
                         handler.sendEmptyMessage(NET_ERROR);
                         handler.sendEmptyMessage(DIALOG_CLOSE);
