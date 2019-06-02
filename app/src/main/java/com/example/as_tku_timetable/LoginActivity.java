@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN_VIDCODE = "https://sso.tku.edu.tw/NEAI/ImageValidate";
     private static final String LOGIN_ACTION = "https://sso.tku.edu.tw/NEAI/login2.do?action=EAI";
     private static final String TIME_TABLE = "https://sso.tku.edu.tw/aissinfo/emis/TMWC090_result.aspx?YrSem=";
-    private static final WWW www = new WWW();
     private static final int LOGIN_ERROR = 0x00;
     private static final int NET_ERROR = 0x01;
     private static final int DIALOG_GET_TABLE = 0x10;
@@ -83,6 +82,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(final String usr, final String psw) {
+        final WWW www = new WWW();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
