@@ -3,6 +3,7 @@ package com.example.as_tku_timetable;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     public static MenuState menuState;
     private static List<ListData> listDatas;
     private static RecyclerView view;
+    private FloatingActionButton floatingBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +85,25 @@ public class MainActivity extends AppCompatActivity {
             listDatas = new ArrayList<>();
         }
 
+        floatingBtn = findViewById(R.id.fab);
         /*******建構主頁內容*******/
         view = findViewById(R.id.list_view);
         view.setAdapter(new MainActivityAdapter(listDatas));
         view.setLayoutManager(new LinearLayoutManager(this));
         view.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if(dy > 0) {
+                    floatingBtn.animate().translationY(
+                            floatingBtn.getHeight() + ((ViewGroup.MarginLayoutParams)floatingBtn.getLayoutParams()).bottomMargin
+                    ).setInterpolator(new LinearInterpolator()).start();
+                } else {
+                    floatingBtn.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
+                };
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         /*******toorbar*******/
         Toolbar toolbar = findViewById(R.id.toolbar);

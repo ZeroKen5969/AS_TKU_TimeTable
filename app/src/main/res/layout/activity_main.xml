@@ -28,7 +28,6 @@
         android:id="@+id/list_view">
 
     </android.support.v7.widget.RecyclerView>
-    <!--include layout="@layout/content_main" /-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -36,6 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@android:color/holo_blue_light"
+        android:tint="#fff"
         app:srcCompat="@drawable/add" />
 
 </android.support.design.widget.CoordinatorLayout>

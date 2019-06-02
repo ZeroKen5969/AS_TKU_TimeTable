@@ -27,6 +27,7 @@ public class TimeTableActivity extends AppCompatActivity {
         setContentView(R.layout.activity_time_table);
 
         tableLayout = findViewById(R.id.time_table);
+
         Bundle bundle = getIntent().getExtras();
         saveBundle = (SaveBundle)bundle.get("saveBundle");
         createTable();
@@ -57,9 +58,10 @@ public class TimeTableActivity extends AppCompatActivity {
 
     private void createTable() {
         saveBundle.timeTable.set(0, "");
+
+        /*******創建內容*******/
         for(int i = 0; i < COL ; ++i) {
             TableRow tableRow = new TableRow(this);
-            tableLayout.addView(tableRow);
             for(int j = 0; j < ROW; ++j) {
                 TextView textView = new TextView(this);
                 textView.setWidth(100);
@@ -69,6 +71,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 textView.setText(formatText(saveBundle.timeTable.get(i * MAX_ROW + j)));
                 tableRow.addView(textView);
             }
+            tableLayout.addView(tableRow);
         }
     }
 
